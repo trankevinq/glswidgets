@@ -1,3 +1,4 @@
+require "base/internal/ui/reflexcore"
 require "base/internal/ui/widgets/glswidgets/reflexcore_gls"
 
 local function map(tbl, func)
@@ -109,9 +110,9 @@ MiniScores_gls =
         nvgFill();
         
         nvgFillColor(shadowColor);
-        nvgText(-77,3, ourScore);
+        nvgText(-147,3, ourScore);
         nvgFillColor(ourColor);
-        nvgText(-80,0, ourScore);
+        nvgText(-150,0, ourScore);
 
         -- difference
         nvgBeginPath();

@@ -109,6 +109,10 @@ function Crosshairs_gls:draw(forceDraw, x, y)
         nvgStroke();
         nvgFillColor(crosshairFillColor); 
         nvgFill();
+        --nvgRect(-crosshairHalfSize, -crosshairHalfWeight, crosshairSize/2, crosshairWeight/2) -- horizontal
+        --nvgRect(-crosshairHalfWeight, -crosshairHalfSize, crosshairWeight/2, crosshairSize/2) -- vertical
+        nvgFillColor(Color(255,0,255,255)); 
+        nvgFill();
     end
 
     -- Crosshair 2

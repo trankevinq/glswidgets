@@ -1,3 +1,4 @@
+require "base/internal/ui/reflexcore"
 require "base/internal/ui/widgets/glswidgets/reflexcore_gls"
 
 GameMessages =
