@@ -1,5 +1,5 @@
 require "base/internal/ui/reflexcore"
-require "base/internal/ui/widgets/glswidgets/reflexcore_gls"
+
 apheleon_TimerTimeline =
 {
 };
@@ -30,12 +30,16 @@ PickupVis[PICKUP_TYPE_POWERUPCARNAGE].color = Color(255,120,128);
 -- Create a list of custom item labels to help differentiate between duplicate items
 
 customItemLabels = {};
-customItemLabels["cpm3"..PICKUP_TYPE_ARMOR100..1] = "Rail";
-customItemLabels["cpm3"..PICKUP_TYPE_ARMOR100..2] = "LG";
+customItemLabels["cpm3"..PICKUP_TYPE_ARMOR100..1] = "LG";
+customItemLabels["cpm3"..PICKUP_TYPE_ARMOR100..2] = "Rail";
 customItemLabels["cpm22"..PICKUP_TYPE_ARMOR50..1] = "GL";
 customItemLabels["cpm22"..PICKUP_TYPE_ARMOR50..2] = "RL";
-customItemLabels["dp5"..PICKUP_TYPE_ARMOR100..1] = "Plasma";
-customItemLabels["dp5"..PICKUP_TYPE_ARMOR100..2] = "Tele";
+customItemLabels["dp5"..PICKUP_TYPE_ARMOR100..1] = "Tele";
+customItemLabels["dp5"..PICKUP_TYPE_ARMOR100..2] = "Plasma";
+customItemLabels["thct5"..PICKUP_TYPE_ARMOR100..1] = "Blue Room";
+customItemLabels["thct5"..PICKUP_TYPE_ARMOR100..2] = "Red Room";
+customItemLabels["thct7"..PICKUP_TYPE_ARMOR100..1] = "GL";
+customItemLabels["thct7"..PICKUP_TYPE_ARMOR100..2] = "LG";
 
 function mapItemLabel(map, itemtype, itemlabel)
 	if not (customItemLabels[map:lower()..itemtype..itemlabel] == nil) then
@@ -67,7 +71,7 @@ function apheleon_TimerTimeline:draw()
 
 	-- Frame Size
 	local frameHeight = 50
-	local frameWidth = 500
+	local frameWidth = 450
 
 	-- Frame Positiion
 	local frameLeft = -frameWidth / 2
@@ -82,8 +86,8 @@ function apheleon_TimerTimeline:draw()
 	local timelineWidth = frameWidth;
 
 	-- Spawn Box Positioning and Size
-	local spawnBoxEntryWidth = 13
-	local spawnBoxRight = frameLeft - 25;
+	local spawnBoxEntryWidth = 10
+	local spawnBoxRight = frameLeft - 50
 	local spawnBoxPadding = 4
 
 	-- Draw the timeline frame
@@ -196,7 +200,7 @@ function apheleon_TimerTimeline:draw()
 			if pickup.timeUntilRespawn > timelineDuration * 1000 then break end;
 
 			-- Configure the item icons and color
-nvgFontFace(FONT_HUD);
+
 		    local iconRadius = 20; -- update this?
 
 		    -- scaledTimerLocation gives a 0.0 to 1.0 number of how close the item is to spawning
@@ -212,7 +216,7 @@ nvgFontFace(FONT_HUD);
 
         	-- when mega is held set color to light blue and position at the 30 sec mark 
         	if pickup.type == PICKUP_TYPE_HEALTH100 and not pickup.canSpawn and timelineDuration >= 30  then
-				iconColor = Color(150,161,255);
+				iconColor = Color(80,0,142);
 				iconX = ( timelineWidth * 30000 / (timelineDuration * 1000) ) + timelineLeft
 				pickup.label = "HELD"
 			end
@@ -287,9 +291,14 @@ nvgFontFace(FONT_HUD);
 				    	nvgFillColor(Color(255,255,255));
 				    	time = round(pickup.timeUntilRespawn / 1000, 0)
 				    end
-					nvgFontSize(25);
+				    local fontColor = Color(255,255,255,255)
+				    local shadow = Color(0,0,0,255)
+				   	nvgFontFace(FONT_NUMBERS)
+				   	nvgFontSize(35);
+				   	nvgFillColor(shadow);
+				 	nvgFillColor(fontColor);
 				    nvgTextAlign(NVG_ALIGN_CENTER, NVG_ALIGN_MIDDLE);
-				    nvgText(iconX, iconY - 35, time);
+				    nvgText(iconX, iconY-40, time);
 				end
 			end
 
@@ -298,7 +307,7 @@ nvgFontFace(FONT_HUD);
 
 				-- Draw black drop shaddow for each spawned item
 			    nvgBeginPath();
-			    nvgRoundedRect(spawnBoxRight - spawnBoxEntryWidth + 2,frameTop + 2,spawnBoxEntryWidth,frameHeight,0);
+			    nvgRoundedRect(spawnBoxRight - spawnBoxEntryWidth + 3,frameTop + 3,spawnBoxEntryWidth,frameHeight,0);
 			    nvgFillColor(Color(0,0,0));
 			    nvgFill();
 			    --spawnBoxRight = spawnBoxRight - spawnBoxPadding - spawnBoxEntryWidth

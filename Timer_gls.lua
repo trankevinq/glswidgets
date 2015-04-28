@@ -71,7 +71,7 @@ function Timer_gls:draw()
         local fontColor1 = Color(0,0,0,255);
         
         nvgFontSize(fontSize);
-        nvgFontFace(FONT_HUD);
+        nvgFontFace(FONT_NUMBERS);
         nvgTextAlign(NVG_ALIGN_CENTER, NVG_ALIGN_TOP);
         
         nvgFontBlur(0);
@@ -79,7 +79,6 @@ function Timer_gls:draw()
         nvgText(fontX+3, fontY+3, textTime);
         
         nvgFontSize(fontSize);
-        nvgFontFace(FONT_HUD);
         nvgTextAlign(NVG_ALIGN_CENTER, NVG_ALIGN_TOP);
         
         nvgFontBlur(0);

@@ -26,9 +26,9 @@ function ArmorBar_gls:draw()
     local colorIcon = false;
    
     -- Size and spacing
-    local frameWidth = 500;
+    local frameWidth = 650;
     local frameHeight = 105;
-    local framePadding = 7;
+    local framePadding = 10;
     local numberSpacing = 200;
     local iconSpacing;
  
@@ -47,10 +47,7 @@ function ArmorBar_gls:draw()
     if player.armorProtection == 1 then barColor = Color(255,176,14, barAlpha) end
     if player.armorProtection == 2 then barColor = Color(236,0,0, barAlpha) end
  
-    local barBackgroundColor;    
-    if player.armorProtection == 0 then barBackgroundColor = Color(0,0,0, barBgAlpha) end
-    if player.armorProtection == 1 then barBackgroundColor = Color(0,0,0, barBgAlpha) end
-    if player.armorProtection == 2 then barBackgroundColor = Color(0,0,0, barBgAlpha) end    
+    local barBackgroundColor = Color(0,0,0, barbgAlpha);
  
     -- Helpers
     local frameLeft = frameWidth;
@@ -61,7 +58,7 @@ function ArmorBar_gls:draw()
     local barBottom = frameBottom - framePadding;
  
     local barWidth = frameWidth - numberSpacing - framePadding - iconSpacing;
-    local barHeight = (frameHeight - (framePadding * 3)) / 2;
+    local barHeight = (frameHeight - (framePadding * 2)) / 2;
     
     local barLeft = frameRight + framePadding
 
@@ -73,7 +70,7 @@ function ArmorBar_gls:draw()
     local UpperBarBottom = frameBottom - framePadding - barHeight - framePadding;
     local LowerBarBottom = frameBottom - framePadding;
  
-    local fontX = barRight+35 + (numberSpacing / 2);
+    local fontX = barRight - (numberSpacing / 1.8);
     local fontY = -(frameHeight / 2);
     local fontSize = frameHeight * 1;
  
@@ -81,24 +78,21 @@ function ArmorBar_gls:draw()
     elseif player.armorProtection == 1 then fillWidth = math.min((barWidth / 150) * player.armor, barWidth);
     elseif player.armorProtection == 2 then fillWidth = (barWidth / 200) * player.armor;
     end
- 
-    -- Black Frame
-    if showFrame then
-        nvgBeginPath();
-        nvgRoundedRect(frameRight, frameBottom, -frameWidth, -frameHeight, 10);
-        nvgFillColor(frameColor); 
-        nvgFill();
-    end
 
     -- Background
     nvgBeginPath();
     nvgRect(barRight+3, UpperBarBottom+3, -barWidth, -barHeight);
+    nvgRect(barRight-3, UpperBarBottom-3, -barWidth, -barHeight);
+    nvgRect(barRight+3, UpperBarBottom-3, -barWidth, -barHeight);
+    nvgRect(barRight-3, UpperBarBottom+3, -barWidth, -barHeight);
     nvgFillColor(barBackgroundColor); 
     nvgFill();
 
     nvgBeginPath();
     nvgRect(barRight+3, barBottom+3, -barWidth, -barHeight);
-    nvgFillColor(barBackgroundColor); 
+    nvgRect(barRight-3, barBottom-3, -barWidth, -barHeight);
+    nvgRect(barRight+3, barBottom-3, -barWidth, -barHeight);
+    nvgRect(barRight-3, barBottom+3, -barWidth, -barHeight);
     nvgFill();
 
     local UpperArmorBarWidth;
@@ -116,7 +110,6 @@ function ArmorBar_gls:draw()
     if UpperArmorBarWidth > 0 then
         nvgBeginPath();
         nvgRect(barRight, UpperBarBottom, -UpperArmorBarWidth, -barHeight);
-        -- nvgRect(x, y, w, h)
         nvgFillColor(barColor);
         nvgFill();
     end
@@ -133,17 +126,19 @@ function ArmorBar_gls:draw()
     -- Draw numbers
     local fontColor;
     local fontStrokeColor = Color(0,0,0,255);
-    local fontStrokeWeight = 20;
     if colorNumber then fontColor = barColor
-    else fontColor = Color(230,230,230);
+    else fontColor = Color(255,255,255);
     end
     
-    nvgFontFace(FONT_HUD);
+    nvgFontFace(FONT_NUMBERS);
     nvgTextAlign(NVG_ALIGN_CENTER, NVG_ALIGN_MIDDLE);
     nvgFontSize(fontSize);
     
     nvgFillColor(fontStrokeColor);
-    nvgText(fontX+3, fontY+3, player.armor);    
+    nvgText(fontX+3, fontY+3, player.armor);
+    nvgText(fontX-3, fontY-3, player.armor);
+    nvgText(fontX-3, fontY+3, player.armor);
+    nvgText(fontX+3, fontY-3, player.armor);
 
     nvgFillColor(fontColor);
     nvgText(fontX, fontY, player.armor);

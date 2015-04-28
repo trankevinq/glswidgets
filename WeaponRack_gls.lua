@@ -13,110 +13,122 @@ function WeaponRack_gls:draw()
     -- Early out if HUD shouldn't be shown.
     if not shouldShowHUD() then return end;
 
-	local translucency = 192;
-	
-   	-- Find player
-	local player = getPlayer();
+    local translucency = 192;
+    
+    -- Find player
+    local player = getPlayer();
 
     local weaponCount = 8; -- table.maxn(player.ammo);
     local spaceCount = weaponCount;
     
     -- Options
-    local verticalRack = false;
-    local weaponWidth = 32;
-    local weaponHeight = 32;
-    local weaponPadding = 60; -- 0 or -1 to remove spacing
+    local verticalRack = true;
+    local weaponWidth = 100;
+    local weaponHeight = 30;
+    local weaponSpacing = 10; -- 0 or -1 to remove spacing
     
     -- Helpers
-    local rackWidth = (weaponWidth * 7) + (weaponPadding * spaceCount);
-    local rackLeft = -(rackWidth / 3);
+    local rackWidth = (weaponWidth * weaponCount) + (weaponSpacing * spaceCount);
+    local rackLeft = -(rackWidth / 2);
     local weaponX = rackLeft;
     local weaponY = 0;
+
+    if verticalRack == true then
+        rackHeight = (weaponHeight * weaponCount) + (weaponSpacing * spaceCount);
+        rackTop = -(rackHeight / 2);
+        weaponX = 0;
+        weaponY = rackTop;
+    end
 
     for weaponIndex = 3, weaponCount do
 
         local weapon = player.weapons[weaponIndex];
-		local color = weapon.color;
+        local color = weapon.color;
     
-		-- if the weapon is out of ammo, colour it grey
-        -- Do we need to add an exception for the axe?
+        -- if we havent picked up the weapon, colour it grey
+
         if weapon.ammo == 0 then
             color.r = 128;
             color.g = 128;
             color.b = 128;
         end
-
-        local backgroundColor = Color(0,0,0,128)
         
-        if weapon.pickedup then
+        if not weapon.pickedup then
+            color.r = 128;
+            color.g = 128;
+            color.b = 128;
+        end
 
-            -- Frame background
-            nvgBeginPath();
-            nvgCircle(weaponX,weaponY-5,weaponWidth-5,weaponHeight-5);
-            if weaponIndex == player.weaponIndexSelected then 
-                backgroundColor.r = lerp(backgroundColor.r, color.r, player.weaponSelectionIntensity);
-                backgroundColor.g = lerp(backgroundColor.g, color.g, player.weaponSelectionIntensity);
-                backgroundColor.b = lerp(backgroundColor.b, color.b, player.weaponSelectionIntensity);
-                backgroundColor.a = lerp(backgroundColor.a, 100, player.weaponSelectionIntensity);
+        local backgroundColor = Color(0,0,0,65)
+        
+        -- Frame background
+        nvgBeginPath();
+        nvgRect(weaponX,weaponY,weaponWidth,weaponHeight);
 
-    			local outlineColor = Color(
-    				color.r,
-    				color.g,
-                    color.b,
-    				lerp(0, 255, player.weaponSelectionIntensity));
+        if weaponIndex == player.weaponIndexSelected then 
+            backgroundColor.r = lerp(backgroundColor.r, color.r, player.weaponSelectionIntensity);
+            backgroundColor.g = lerp(backgroundColor.g, color.g, player.weaponSelectionIntensity);
+            backgroundColor.b = lerp(backgroundColor.b, color.b, player.weaponSelectionIntensity);
+            backgroundColor.a = lerp(backgroundColor.a, 128, player.weaponSelectionIntensity);
 
-                nvgStrokeWidth(0);
-                nvgStrokeColor(outlineColor);
-                nvgStroke();
-            end
+            local outlineColor = Color(
+                color.r,
+                color.g,
+                color.b,
+                lerp(0, 255, player.weaponSelectionIntensity));
 
-            nvgFillColor(backgroundColor);
-            nvgFill();
+            nvgStrokeWidth(2);
+            nvgStrokeColor(outlineColor);
+            nvgStroke();
+        end
 
-            -- Icon
-    	    local iconRadius = weaponHeight * 1;
-            local iconX = weaponX + (weaponWidth / 25);
-            local iconY = (weaponHeight / 25);
-            local iconColor = color;
-            local shadowColor = Color(0,0,0);
+        nvgFillColor(backgroundColor);
+        nvgFill();
 
--- turn weapons white when selected
-            if weaponIndex == player.weaponIndexSelected then 
-    			iconColor.r = lerp(iconColor.r, 255, player.weaponSelectionIntensity);
-    			iconColor.g = lerp(iconColor.g, 255, player.weaponSelectionIntensity);
-    			iconColor.b = lerp(iconColor.b, 255, player.weaponSelectionIntensity);
-    			iconColor.a = lerp(iconColor.a, 255, player.weaponSelectionIntensity);
-    		end
-            
-            local svgName = "internal/ui/icons/weapon"..weaponIndex;
-            nvgFillColor(shadowColor);
-            nvgSvg(svgName, iconX, iconY, iconRadius);
-            nvgFillColor(iconColor);
-            nvgSvg(svgName, iconX-3, iconY-3, iconRadius);
+        -- Icon
+        local iconRadius = weaponHeight * 0.40;
+        local iconX = weaponX + (weaponHeight - iconRadius);
+        local iconY = (weaponHeight / 2);
+        local iconColor = color;
 
-            -- Ammo
-    	    local ammoX = weaponX + (weaponWidth / 25);
-            local ammoCount = player.weapons[weaponIndex].ammo;
+        if verticalRack == true then
+            iconX = weaponX + iconRadius + 5;
+            iconY = weaponY + (weaponHeight / 2);
+        end
 
-            if weaponIndex == 1 then ammoCount = "-" end
-            nvgFontSize(32);
-            nvgFontFace(FONT_HUD);
-    	    nvgTextAlign(NVG_ALIGN_CENTER, NVG_ALIGN_TOP);
+        if weaponIndex == player.weaponIndexSelected then 
+            iconColor.r = lerp(iconColor.r, 255, player.weaponSelectionIntensity);
+            iconColor.g = lerp(iconColor.g, 255, player.weaponSelectionIntensity);
+            iconColor.b = lerp(iconColor.b, 255, player.weaponSelectionIntensity);
+            iconColor.a = lerp(iconColor.a, 255, player.weaponSelectionIntensity);
+        end
+        
+        local svgName = "internal/ui/icons/weapon"..weaponIndex;
+        nvgFillColor(iconColor);
+        nvgSvg(svgName, iconX, iconY, iconRadius);
 
-    	    nvgFontBlur(0);
-    	    nvgFillColor(Color(0,0,0));
-            if (ammoCount <= 5) then
-                nvgFillColor(Color(255,0,0));
-            end       
-    	    nvgText(ammoX+3, 35+3, ammoCount);
-            nvgFillColor(Color(255,255,255));
-            nvgText(ammoX, 35, ammoCount);
+        -- Ammo
+        local ammoX = weaponX + (iconRadius) + (weaponWidth / 2);
+        local ammoCount = player.weapons[weaponIndex].ammo;
 
-            if verticalRack == true then
-                weaponY = weaponY + weaponHeight + weaponPadding;
-            else
-                weaponX = weaponX + weaponWidth + weaponPadding;
-            end
+        if verticalRack == true then
+            ammoX = weaponX + (weaponWidth / 2) + iconRadius;
+        end
+
+        if weaponIndex == 1 then ammoCount = "-" end
+
+        nvgFontSize(30);
+        nvgFontFace(FONT_NUMBERS);
+        nvgTextAlign(NVG_ALIGN_CENTER, NVG_ALIGN_TOP);
+
+        nvgFontBlur(0);
+        nvgFillColor(Color(255,255,255));
+        nvgText(ammoX, weaponY, ammoCount);
+        
+        if verticalRack == true then
+            weaponY = weaponY + weaponHeight + weaponSpacing;
+        else
+            weaponX = weaponX + weaponWidth + weaponSpacing;
         end
        
     end

@@ -46,7 +46,8 @@ NVG_CCW = 1
 NVG_CW = 2
 
 FONT_HEADER = "oswald-bold";
-FONT_HUD = "Solaria";
+FONT_HUD = "oswald-bold";
+FONT_NUMBERS ="visitor2"
 FONT_TEXT = "roboto-regular";
 FONT_TEXT_BOLD = "roboto-bold";
 FONT_SIZE_DEFAULT = 24;
